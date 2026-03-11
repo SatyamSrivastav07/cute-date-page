@@ -254,6 +254,21 @@
     animation: heartPulse 1.5s ease-in-out infinite;
   }
 
+  /* Image that sits on the envelope face (uses a local file path) */
+  .env-image {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 62%;
+    max-width: 160px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    z-index: 2;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+  }
+
   @keyframes heartPulse {
     0%,100% { transform: translate(-50%,-50%) scale(1); }
     50% { transform: translate(-50%,-50%) scale(1.2); }
@@ -926,6 +941,8 @@
         <div class="env-left"></div>
         <div class="env-right"></div>
         <div class="env-heart">💌</div>
+        <!-- User image placed on the envelope face. If you open this file locally the file:/// path will load the image. -->
+        <img class="env-image" src="file:///C:/Users/Redmi/Pictures/satakshi.jpeg" alt="satakshi">
       </div>
     </div>
     <p class="env-hint" id="env-hint">Click to open 💕</p>
