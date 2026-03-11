@@ -409,9 +409,12 @@
     font-family: 'Quicksand', sans-serif;
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.15s;
+    /* allow smooth movement when we change left/top and a small transform tease */
+    transition: left 0.22s ease, top 0.22s ease, transform 0.15s;
     position: relative;
   }
+
+  .no-btn.tease { transform: translateY(-6px) scale(1.06); }
 
   .yay-message {
     display: none;
@@ -968,8 +971,9 @@
         Will you go on a date with me? 💕
       </div>
       <div class="btn-row" id="btn-row">
-        <button class="yes-btn" onclick="sayYes()">Yes! 💖</button>
-        <button class="no-btn" id="no-btn" onmouseover="dodgeNo(event)">No</button>
+  <button class="yes-btn" onclick="sayYes()">Yes! 💖</button>
+  <!-- call dodgeNo on hover or click so it teases the user when attempted to press -->
+  <button class="no-btn" id="no-btn" onmouseover="dodgeNo(event)" onclick="dodgeNo(event)">No</button>
       </div>
       <div class="yay-message" id="yay-msg">
         <span class="yay-emoji">🎉</span>
@@ -1201,6 +1205,21 @@ function dodgeNo(e) {
     btn.style.pointerEvents = 'none';
     btn.style.opacity = '0.4';
   }
+}
+
+// make the dodge more playful: add a short tease animation when triggered
+function _teaseButtonAnimation(btn) {
+  btn.classList.add('tease');
+  setTimeout(() => btn.classList.remove('tease'), 300);
+}
+
+// enhance dodgeNo to include the tease animation (keep original logic)
+const _oldDodgeNo = dodgeNo;
+dodgeNo = function(e) {
+  const btn = document.getElementById('no-btn');
+  _teaseButtonAnimation(btn);
+  // call original behavior
+  _oldDodgeNo(e);
 }
 
 function launchConfetti() {
