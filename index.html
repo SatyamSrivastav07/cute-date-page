@@ -257,16 +257,22 @@
   /* Image that sits on the envelope face (uses a local file path) */
   .env-image {
     position: absolute;
-    top: 42%;
+    /* center on envelope face */
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 62%;
-    max-width: 160px;
-    height: auto;
+    transform: translate(-50%, -52%);
+    /* let image keep natural ratio but cap both dimensions so it never overflows */
+    width: auto;
+    max-width: 170px;
+    max-height: 140px;
     border-radius: 8px;
     object-fit: cover;
     z-index: 2;
     box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+  }
+
+  @media (max-width: 480px) {
+    .env-image { max-width: 130px; max-height: 110px; }
   }
 
   @keyframes heartPulse {
