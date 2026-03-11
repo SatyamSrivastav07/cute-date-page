@@ -457,6 +457,40 @@
     100% { transform: translateY(110vh) rotate(720deg); opacity: 0.3; }
   }
 
+  /* Flower / petal pieces */
+  .flower-piece {
+    position: fixed;
+    width: 20px; height: 20px;
+    top: -40px;
+    pointer-events: none;
+    z-index: 210;
+    transform-origin: center;
+    animation: flowerFall linear forwards;
+  }
+
+  @keyframes flowerFall {
+    0% { transform: translateY(-40px) rotate(0deg) scale(0.8); opacity: 0; }
+    10% { opacity: 1; }
+    50% { transform: translateY(40vh) rotate(180deg) scale(1); }
+    100% { transform: translateY(110vh) rotate(360deg) scale(0.9); opacity: 0; }
+  }
+
+  /* small drifting petals near envelope (absolute so they appear around envelope) */
+  .petal-piece {
+    position: absolute;
+    width: 14px; height: 14px;
+    pointer-events: none;
+    z-index: 120;
+    transform-origin: center;
+    animation: petalDrift linear forwards;
+  }
+
+  @keyframes petalDrift {
+    0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateY(140px) translateX(40px) rotate(420deg) scale(0.8); opacity: 0; }
+  }
+
   /* ===== HEART GAME ===== */
   #game-section {
     background: linear-gradient(160deg, #fce4ec 0%, #fff0f4 100%);
@@ -1155,6 +1189,8 @@ function openEnvelope() {
         });
       });
     });
+    // small petal drift when envelope opens
+    launchPetals(10);
   }, 700);
 }
 
@@ -1188,6 +1224,8 @@ function sayYes() {
   document.getElementById('question-content').style.display = 'none';
   document.getElementById('yay-msg').classList.add('show');
   launchConfetti();
+  // a quick flower shower for extra cuteness
+  launchFlowers(36);
 }
 
 function dodgeNo(e) {
@@ -1248,6 +1286,51 @@ function launchConfetti() {
       document.body.appendChild(c);
       setTimeout(() => c.remove(), 4000);
     }, i * 25);
+  }
+}
+
+// Flower shower: uses emoji or tiny images for a cute shower
+function launchFlowers(count = 48) {
+  const flowers = ['🌸','🌺','🌷','🌼','🌻'];
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const f = document.createElement('div');
+      f.className = 'flower-piece';
+      // use emoji as content for simplicity and small size
+      f.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+      // random horizontal start
+      f.style.left = (5 + Math.random() * 90) + 'vw';
+      f.style.fontSize = (12 + Math.random() * 18) + 'px';
+      f.style.animationDuration = (1.8 + Math.random() * 2.2) + 's';
+      f.style.animationDelay = (Math.random() * 0.4) + 's';
+      // subtle starting rotation
+      f.style.transform = `rotate(${Math.random()*360}deg)`;
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 4800);
+    }, i * 40);
+  }
+}
+
+// Petal drift around the envelope — places petals inside the envelope-wrap
+function launchPetals(count = 12) {
+  const wrap = document.getElementById('env-wrap');
+  if (!wrap) return;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal-piece';
+    p.textContent = Math.random() > 0.6 ? '🌸' : '🌺';
+    // randomize starting position inside the wrap
+    const rw = wrap.getBoundingClientRect();
+    const sx = 10 + Math.random() * (rw.width - 20);
+    const sy = 10 + Math.random() * (rw.height / 2);
+    p.style.left = sx + 'px';
+    p.style.top = sy + 'px';
+    p.style.fontSize = (12 + Math.random() * 12) + 'px';
+    p.style.animationDuration = (2.2 + Math.random() * 1.6) + 's';
+    p.style.opacity = '0';
+    wrap.appendChild(p);
+    // remove after animation end
+    setTimeout(() => p.remove(), 3500 + Math.random() * 800);
   }
 }
 
@@ -1474,6 +1557,8 @@ function finalProposal() {
   document.getElementById('proposal-response').classList.add('show');
   launchFireworks();
   launchConfetti();
+  // big flower shower for the finale
+  setTimeout(() => launchFlowers(90), 200);
 }
 
 function launchFireworks() {
