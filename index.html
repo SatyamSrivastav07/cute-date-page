@@ -409,12 +409,15 @@
     font-family: 'Quicksand', sans-serif;
     font-weight: 700;
     cursor: pointer;
-    /* allow smooth movement when we change left/top and a small transform tease */
-    transition: left 0.22s ease, top 0.22s ease, transform 0.15s;
+    /* movement via CSS variables so transform can be combined with a tease class */
+    --tx: 0px; --ty: 0px;
+    transform: translate(var(--tx), var(--ty));
+    transition: transform 0.28s cubic-bezier(.22,.9,.34,1);
     position: relative;
   }
 
-  .no-btn.tease { transform: translateY(-6px) scale(1.06); }
+  /* when teasing, add an extra small pop while preserving the translate vars above */
+  .no-btn.tease { transform: translate(var(--tx), var(--ty)) translateY(-6px) scale(1.06); }
 
   .yay-message {
     display: none;
@@ -1191,14 +1194,21 @@ function dodgeNo(e) {
   const btn = document.getElementById('no-btn');
   const card = btn.closest('.question-card');
   const cr = card.getBoundingClientRect();
-  const bw = btn.offsetWidth, bh = btn.offsetHeight;
-  const maxX = cr.width - bw - 10;
-  const maxY = cr.height - bh - 10;
-  const nx = Math.max(5, Math.min(maxX, Math.random() * maxX));
-  const ny = Math.max(5, Math.min(maxY, Math.random() * maxY));
-  btn.style.position = 'absolute';
-  btn.style.left = nx + 'px';
-  btn.style.top = ny + 'px';
+  const br = btn.getBoundingClientRect();
+  const bw = br.width, bh = br.height;
+  // compute a target position within the card bounds (in px relative to card)
+  const maxX = Math.max(5, cr.width - bw - 10);
+  const maxY = Math.max(5, cr.height - bh - 10);
+  const nx = Math.max(6, Math.min(maxX, Math.floor(Math.random() * maxX)));
+  const ny = Math.max(6, Math.min(maxY, Math.floor(Math.random() * maxY)));
+  // current button position relative to card
+  const curLeft = br.left - cr.left;
+  const curTop = br.top - cr.top;
+  const dx = nx - curLeft;
+  const dy = ny - curTop;
+  // set CSS vars so transform is used for movement (keeps animation smooth and composited)
+  btn.style.setProperty('--tx', dx + 'px');
+  btn.style.setProperty('--ty', dy + 'px');
   noClicks++;
   if (noClicks >= 5) {
     btn.textContent = '...fine 😅';
