@@ -257,22 +257,20 @@
   /* Image that sits on the envelope face (uses a local file path) */
   .env-image {
     position: absolute;
-    /* center on envelope face */
-    top: 50%;
+    /* place the image to cover the envelope body area */
+    bottom: 6%;
     left: 50%;
-    transform: translate(-50%, -52%);
-    /* let image keep natural ratio but cap both dimensions so it never overflows */
-    width: auto;
-    max-width: 170px;
-    max-height: 140px;
-    border-radius: 8px;
-    object-fit: cover;
+    transform: translateX(-50%);
+    width: 86%;
+    height: 62%;
+    border-radius: 8px 8px 12px 12px;
+    object-fit: cover; /* ensures the image fills the box and preserves aspect ratio */
     z-index: 2;
     box-shadow: 0 8px 30px rgba(0,0,0,0.14);
   }
 
   @media (max-width: 480px) {
-    .env-image { max-width: 130px; max-height: 110px; }
+    .env-image { width: 78%; height: 58%; border-radius: 6px 6px 10px 10px; }
   }
 
   @keyframes heartPulse {
