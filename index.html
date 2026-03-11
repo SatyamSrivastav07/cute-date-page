@@ -1120,6 +1120,11 @@
       <h2 class="proposal-title">I really enjoy<br>being with you.</h2>
       <p class="proposal-sub">Every moment around you feels like sunshine. There's no one else I'd rather spend my time with.</p>
       <button class="proposal-btn" onclick="finalProposal()">Will you be my date , Satakshi Varshney? 🌸</button>
+      <!-- Add Yes / No choices here so the finale also gets the playful interaction -->
+      <div style="margin-top:1.6rem; display:flex; gap:1rem; justify-content:center;">
+        <button class="yes-btn" onclick="finalProposal()">Yes! 🌸</button>
+        <button class="no-btn" id="no-btn-final" onmouseover="dodgeNoFinal(event)" onclick="dodgeNoFinal(event)">No</button>
+      </div>
       <div class="proposal-response" id="proposal-response">
         ✨ You've made me the happiest person alive ✨<br>
         <span style="font-size:0.75em; opacity:0.8">Forever yours, always 💕</span>
@@ -1268,6 +1273,27 @@ dodgeNo = function(e) {
   _teaseButtonAnimation(btn);
   // call original behavior
   _oldDodgeNo(e);
+}
+
+// Final proposal 'No' button dodge (same behavior but uses a different container and id)
+function dodgeNoFinal(e) {
+  const btn = document.getElementById('no-btn-final');
+  if (!btn) return;
+  _teaseButtonAnimation(btn);
+  const card = btn.closest('.proposal-content') || btn.closest('.proposal') || document.getElementById('proposal-section');
+  const cr = card.getBoundingClientRect();
+  const br = btn.getBoundingClientRect();
+  const bw = br.width, bh = br.height;
+  const maxX = Math.max(6, cr.width - bw - 10);
+  const maxY = Math.max(6, cr.height - bh - 10);
+  const nx = Math.max(6, Math.min(maxX, Math.floor(Math.random() * maxX)));
+  const ny = Math.max(6, Math.min(maxY, Math.floor(Math.random() * maxY)));
+  const curLeft = br.left - cr.left;
+  const curTop = br.top - cr.top;
+  const dx = nx - curLeft;
+  const dy = ny - curTop;
+  btn.style.setProperty('--tx', dx + 'px');
+  btn.style.setProperty('--ty', dy + 'px');
 }
 
 function launchConfetti() {
